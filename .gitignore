@@ -1,0 +1,9 @@
+### IntelliJ IDEA ###
+out/
+.idea/workspace.xml
+.idea/shelf/
+*.class
+
+### OS ###
+.DS_Store
+Thumbs.db
