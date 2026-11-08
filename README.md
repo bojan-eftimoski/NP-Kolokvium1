@@ -29,12 +29,35 @@ All solutions compile with Java 21. Each one was run on both example inputs from
 | 19 | [LoadedCoin](src/kol1/zad19) | `LoadedCoinTest` | inheritance, `Random` |
 | 20 | [Subtitles](src/kol1/zad20) | `SubtitlesTest` | parsing, time formatting |
 
-## Opening and running
+## Cloning into IntelliJ IDEA
 
-1. In IntelliJ IDEA, choose **File → Open** and select the `NP-Kolokvium1` folder.
-2. If IntelliJ shows *"Project JDK is not defined"*, click **Setup SDK** and pick a JDK 21, for example Eclipse Temurin 21.
-3. Open a task's file, for example `src/kol1/zad01/Shapes1Test.java`, and click the green ▶ next to `main`.
-4. Paste the example input from `zadaci/zadNN.md` into the Run panel. Most tasks read until the end of the input. To signal the end of input, press **Ctrl+D** in the Run panel.
+1. In IntelliJ IDEA, choose **File → New → Project from Version Control**. On the welcome screen, this is the **Clone Repository** button.
+2. In **URL**, paste `https://github.com/bojan-eftimoski/NP-Kolokvium1.git`, choose a folder, and click **Clone**.
+3. When IntelliJ asks whether to trust the project, click **Trust Project**.
+4. If IntelliJ shows *"Project JDK is not defined"*, click **Setup SDK** and pick a JDK 21 or newer. If no JDK is installed, choose **Download JDK** and pick, for example, Eclipse Temurin 21.
+
+You can also clone from a terminal with `git clone https://github.com/bojan-eftimoski/NP-Kolokvium1.git`, then open the folder with **File → Open**.
+
+## Running a task
+
+1. Open a task's file, for example `src/kol1/zad01/Shapes1Test.java`, and click the green ▶ next to `main`.
+2. Paste the example input from the `README.md` in that task's folder into the Run panel. Most tasks read until the end of the input. To signal the end of input, press **Ctrl+D** in the Run panel.
+
+## Project files
+
+| File | What it is |
+|---|---|
+| `NP-Kolokvium1.iml` | The IntelliJ **module file**. It tells IntelliJ that `src` holds the source code and that the module uses the project's JDK. Without it, IntelliJ wouldn't know which folder to compile. |
+| `.idea/modules.xml` | Lists the project's modules. Here there is one, `NP-Kolokvium1.iml`. |
+| `.idea/misc.xml` | Sets the project JDK (`temurin-21`), the Java language level (21), and the output folder (`out/`). |
+| `.gitignore` | Keeps compiled files (`out/`, `*.class`) and personal IntelliJ settings (`.idea/workspace.xml`) out of git. |
+
+These files are only for IntelliJ. To compile and run without IntelliJ, use the JDK directly:
+
+```bash
+javac -d out src/kol1/zad01/*.java
+java -cp out kol1.zad01.Shapes1Test
+```
 
 ## Things to know
 
@@ -42,19 +65,3 @@ All solutions compile with Java 21. Each one was run on both example inputs from
 - **zad19 is random.** The test flips coins many times and checks that the results fall within a range. Very rarely, a correct solution prints `NO`. If that happens, run it again.
 - **zad16 / zad17 rounding.** The total for each receipt is summed with a stream. Streams use compensated summation, and that reproduces the expected rounding exactly. A plain `for` loop can differ in the last digit.
 - **Decimal separator.** If your Windows regional format uses a comma for decimals, `String.format` can print `10000,00` where the expected output has `10000.00`. The graders use a dot.
-
-## Pushing this project to GitHub
-
-1. On github.com, create a new **empty** repository, for example `np-prv-kolokvium`. Don't add a README or a `.gitignore`.
-2. In a terminal opened in the `NP-Kolokvium1` folder, run:
-
-```bash
-git init
-git add .
-git commit -m "Solutions for the first midterm practice tasks"
-git branch -M main
-git remote add origin https://github.com/bojan-eftimoski/np-prv-kolokvium.git
-git push -u origin main
-```
-
-Alternatively, on the new repository's page, click **uploading an existing file** and drag in the contents of this folder.
