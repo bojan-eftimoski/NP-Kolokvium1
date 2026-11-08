@@ -7,14 +7,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
 
-class InvalidPositionException extends Exception {
-
-    public InvalidPositionException(int position) {
-        super(String.format("Invalid position %d, alredy taken!", position));
-    }
-}
-
-class Component {
+class Component { //Composite
 
     public static final String INDENT = "---";
 
@@ -64,6 +57,13 @@ class Component {
     @Override
     public String toString() {
         return toString(0);
+    }
+}
+
+class InvalidPositionException extends Exception {
+
+    public InvalidPositionException(int position) {
+        super(String.format("Invalid position %d, alredy taken!", position));
     }
 }
 

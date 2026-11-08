@@ -5,13 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
-class NonExistingItemException extends Exception {
-
-    public NonExistingItemException(String message) {
-        super(message);
-    }
-}
-
 class CannotOpenException extends Exception {
 
     public CannotOpenException(String message) {
@@ -78,6 +71,13 @@ class SpecialArchive extends Archive {
             throw new CannotOpenException(String.format("Item %d cannot be opened more than %d times", getId(), maxOpen));
         }
         timesOpened++;
+    }
+}
+
+class NonExistingItemException extends Exception {
+
+    public NonExistingItemException(String message) {
+        super(message);
     }
 }
 

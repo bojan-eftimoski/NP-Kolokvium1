@@ -17,26 +17,17 @@ class Triple<T extends Number> {
     }
 
     public double max() {
-        double max = elements.get(0).doubleValue();
-        for (T element : elements) {
-            if (element.doubleValue() > max) {
-                max = element.doubleValue();
-            }
-        }
-        return max;
+        return elements.stream()
+                .mapToDouble(Number::doubleValue)
+                .max()
+                .orElse(0);
     }
 
-    public double average() {
-        double sum = 0;
-        for (T element : elements) {
-            sum += element.doubleValue();
-        }
-        return sum / elements.size();
-    }
-
-    // the test class calls the method with this spelling
     public double avarage() {
-        return average();
+        return elements.stream()
+                .mapToDouble(Number::doubleValue)
+                .average()
+                .orElse(0);
     }
 
     public void sort() {

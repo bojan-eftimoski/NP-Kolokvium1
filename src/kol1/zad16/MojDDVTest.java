@@ -1,20 +1,12 @@
 package kol1.zad16;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-
-class AmountNotAllowedException extends Exception {
-
-    public AmountNotAllowedException(int amount) {
-        super(String.format("Receipt with amount %d is not allowed to be scanned", amount));
-    }
-}
 
 enum TaxType {
     A, B, V
@@ -47,6 +39,13 @@ class Item {
     }
 }
 
+class AmountNotAllowedException extends Exception {
+
+    public AmountNotAllowedException(int amount) {
+        super(String.format("Receipt with amount %d is not allowed to be scanned", amount));
+    }
+}
+
 class Receipt {
 
     public static final int MAX_AMOUNT = 30000;
@@ -60,12 +59,15 @@ class Receipt {
     }
 
     public static Receipt create(String line) throws AmountNotAllowedException {
-        String[] parts = line.split("\\s+");
+        String[] parts = line.trim().split("\\s+");
+        String id = parts[0];
         List<Item> items = new ArrayList<>();
         for (int i = 1; i + 1 < parts.length; i += 2) {
-            items.add(new Item(Integer.parseInt(parts[i]), TaxType.valueOf(parts[i + 1])));
+            int price = Integer.parseInt(parts[i]);
+            TaxType taxType = TaxType.valueOf(parts[i + 1]);
+            items.add(new Item(price, taxType));
         }
-        Receipt receipt = new Receipt(parts[0], items);
+        Receipt receipt = new Receipt(id, items);
         if (receipt.getSumOfAmounts() > MAX_AMOUNT) {
             throw new AmountNotAllowedException(receipt.getSumOfAmounts());
         }
@@ -73,11 +75,7 @@ class Receipt {
     }
 
     public int getSumOfAmounts() {
-        int sum = 0;
-        for (Item item : items) {
-            sum += item.getPrice();
-        }
-        return sum;
+        return items.stream().mapToInt(Item::getPrice).sum();
     }
 
     public double getTaxReturn() {
@@ -102,29 +100,20 @@ class MojDDV {
 
     public void readRecords(InputStream inputStream) {
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-        try {
-            String line;
-            while ((line = br.readLine()) != null) {
-                line = line.trim();
-                if (line.isEmpty()) {
-                    continue;
-                }
-                try {
-                    receipts.add(Receipt.create(line));
-                } catch (AmountNotAllowedException e) {
-                    System.out.println(e.getMessage());
-                }
-            }
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+        br.lines()
+                .filter(line -> !line.isBlank())
+                .forEach(line -> {
+                    try {
+                        receipts.add(Receipt.create(line));
+                    } catch (AmountNotAllowedException e) {
+                        System.out.println(e.getMessage());
+                    }
+                });
     }
 
     public void printTaxReturns(OutputStream outputStream) {
         PrintWriter pw = new PrintWriter(outputStream);
-        for (Receipt receipt : receipts) {
-            pw.println(receipt);
-        }
+        receipts.forEach(pw::println);
         pw.flush();
     }
 }

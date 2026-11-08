@@ -7,13 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-class CategoryNotFoundException extends Exception {
-
-    public CategoryNotFoundException(String categoryName) {
-        super(String.format("Category %s was not found", categoryName));
-    }
-}
-
 class Category {
 
     private String name;
@@ -106,6 +99,13 @@ class MediaNewsItem extends NewsItem {
     }
 }
 
+class CategoryNotFoundException extends Exception {
+
+    public CategoryNotFoundException(String categoryName) {
+        super(String.format("Category %s was not found", categoryName));
+    }
+}
+
 class FrontPage {
 
     private List<NewsItem> newsItems;
@@ -176,7 +176,7 @@ public class FrontPageTest {
 			TextNewsItem tni = new TextNewsItem(title, date, categories[categoryIndex], text);
 			frontPage.addNewsItem(tni);
 		}
-
+        
 		n = scanner.nextInt();
 		scanner.nextLine();
 		for (int i = 0; i < n; ++i) {

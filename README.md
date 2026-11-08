@@ -6,6 +6,20 @@ Each task is in its own package, `src/kol1/zadNN`, in a single file named after 
 
 All solutions compile with Java 21. Each one was run on both example inputs from the task, and the output matched the expected output exactly.
 
+## Code style
+
+The code follows the style of the course's auditory exercises, as written in the TA repo [np-code-2025](https://github.com/atodorovska/np-code-2025):
+
+- **Input:** read with `br.lines()` and turned into objects by a static `createX(String line)` factory that splits each line with `line.split("\\s+")`.
+- **Calculations:** sums, minimums, maximums and averages use streams (`mapToInt` / `mapToDouble`).
+- **Sorting and printing:** sorting uses `Comparator.comparing(...)`, and output goes through a `PrintWriter` that is flushed but never closed.
+- **Exceptions:** checked exceptions with a single constructor that builds the message with `String.format`.
+- **Visibility:** fields are `private` and accessed through getters.
+
+There are two exceptions. zad07 and zad20 read input with a `readLine` loop, because their input can't be processed line by line with a stream.
+
+## Tasks
+
 | # | Task | Test class | Main topics |
 |---|---|---|---|
 | 01 | [ShapesApplication – squares](src/kol1/zad01) | `Shapes1Test` | reading an `InputStream`, lists |

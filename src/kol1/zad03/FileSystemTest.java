@@ -5,14 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
-class FileNameExistsException extends Exception {
-
-    public FileNameExistsException(String fileName, String folderName) {
-        super(String.format("There is already a file named %s in the folder %s", fileName, folderName));
-    }
-}
-
-interface IFile {
+interface IFile { //Component
 
     String getFileName();
 
@@ -25,6 +18,13 @@ interface IFile {
     long findLargestFile();
 }
 
+class FileNameExistsException extends Exception {
+
+    public FileNameExistsException(String fileName, String folderName) {
+        super(String.format("There is already a file named %s in the folder %s", fileName, folderName));
+    }
+}
+
 class Indentation {
 
     public static final String INDENT = "    ";
@@ -34,7 +34,7 @@ class Indentation {
     }
 }
 
-class File implements IFile {
+class File implements IFile { //Leaf
 
     private String name;
     private long size;
@@ -70,7 +70,7 @@ class File implements IFile {
     }
 }
 
-class Folder implements IFile {
+class Folder implements IFile { //Composite
 
     private String name;
     private List<IFile> files;
@@ -96,11 +96,9 @@ class Folder implements IFile {
 
     @Override
     public long getFileSize() {
-        long sum = 0;
-        for (IFile file : files) {
-            sum += file.getFileSize();
-        }
-        return sum;
+        return files.stream()
+                .mapToLong(IFile::getFileSize)
+                .sum();
     }
 
     @Override
@@ -125,11 +123,10 @@ class Folder implements IFile {
     // largest regular file anywhere inside this folder (0 if there is none)
     @Override
     public long findLargestFile() {
-        long max = 0;
-        for (IFile file : files) {
-            max = Math.max(max, file.findLargestFile());
-        }
-        return max;
+        return files.stream()
+                .mapToLong(IFile::findLargestFile)
+                .max()
+                .orElse(0);
     }
 }
 

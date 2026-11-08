@@ -42,12 +42,9 @@ class LogSystem<T extends ILog & Comparable<T>> {
                 .filter(log -> log.getMessage().length() < MAX_MESSAGE_LENGTH)
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        // sorted copy, the original list stays unchanged
-        LogProcessor<T> thirdLogProcessor = logs -> {
-            ArrayList<T> sorted = new ArrayList<>(logs);
-            Collections.sort(sorted);
-            return sorted;
-        };
+        LogProcessor<T> thirdLogProcessor = logs -> logs.stream()
+                .sorted()
+                .collect(Collectors.toCollection(ArrayList::new));
 
         System.out.println("RESULTS FROM THE FIRST LOG PROCESSOR");
         firstLogProcessor.processLogs(logsList).forEach(l -> System.out.println(l.toString()));

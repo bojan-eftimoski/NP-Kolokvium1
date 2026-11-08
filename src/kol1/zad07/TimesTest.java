@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 class UnsupportedFormatException extends Exception {
@@ -92,6 +91,10 @@ class Time implements Comparable<Time> {
     }
 }
 
+enum TimeFormat {
+	FORMAT_24, FORMAT_AMPM
+}
+
 class TimeTable {
 
     private List<Time> times;
@@ -122,15 +125,15 @@ class TimeTable {
 
     public void writeTimes(OutputStream outputStream, TimeFormat format) {
         PrintWriter pw = new PrintWriter(outputStream);
-        List<Time> sorted = new ArrayList<>(times);
-        Collections.sort(sorted);
-        for (Time time : sorted) {
-            if (format == TimeFormat.FORMAT_24) {
-                pw.println(time);
-            } else {
-                pw.println(time.toAmPmString());
-            }
-        }
+        times.stream()
+                .sorted()
+                .forEach(time -> {
+                    if (format == TimeFormat.FORMAT_24) {
+                        pw.println(time);
+                    } else {
+                        pw.println(time.toAmPmString());
+                    }
+                });
         pw.flush();
     }
 }
@@ -152,8 +155,4 @@ public class TimesTest {
 		timeTable.writeTimes(System.out, TimeFormat.FORMAT_AMPM);
 	}
 
-}
-
-enum TimeFormat {
-	FORMAT_24, FORMAT_AMPM
 }

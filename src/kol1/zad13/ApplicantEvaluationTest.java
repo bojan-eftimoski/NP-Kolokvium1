@@ -2,11 +2,18 @@ package kol1.zad13;
 
 import java.util.Scanner;
 
-class InvalidEvaluation extends Exception {
-
-    public InvalidEvaluation(String message) {
-        super(message);
+interface Evaluator {
+    enum TYPE {
+        NO_CRIMINAL_RECORD,
+        MORE_EXPERIENCE,
+        MORE_CREDIT_SCORE,
+        NO_CRIMINAL_RECORD_AND_MORE_EXPERIENCE,
+        MORE_EXPERIENCE_AND_MORE_CREDIT_SCORE,
+        NO_CRIMINAL_RECORD_AND_MORE_CREDIT_SCORE,
+        INVALID // should throw exception
     }
+
+    boolean evaluate(Applicant applicant);
 }
 
 class Applicant {
@@ -46,18 +53,11 @@ class Applicant {
     }
 }
 
-interface Evaluator {
-    enum TYPE {
-        NO_CRIMINAL_RECORD,
-        MORE_EXPERIENCE,
-        MORE_CREDIT_SCORE,
-        NO_CRIMINAL_RECORD_AND_MORE_EXPERIENCE,
-        MORE_EXPERIENCE_AND_MORE_CREDIT_SCORE,
-        NO_CRIMINAL_RECORD_AND_MORE_CREDIT_SCORE,
-        INVALID // should throw exception
-    }
+class InvalidEvaluation extends Exception {
 
-    boolean evaluate(Applicant applicant);
+    public InvalidEvaluation(String message) {
+        super(message);
+    }
 }
 
 class EvaluatorBuilder {

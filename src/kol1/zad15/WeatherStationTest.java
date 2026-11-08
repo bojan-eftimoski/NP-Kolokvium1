@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 class Measurement {
 
@@ -70,22 +71,19 @@ class WeatherStation {
     }
 
     public void status(Date from, Date to) {
-        List<Measurement> inPeriod = new ArrayList<>();
-        for (Measurement m : measurements) {
-            if (!m.getDate().before(from) && !m.getDate().after(to)) {
-                inPeriod.add(m);
-            }
-        }
+        List<Measurement> inPeriod = measurements.stream()
+                .filter(m -> !m.getDate().before(from) && !m.getDate().after(to))
+                .sorted(Comparator.comparing(Measurement::getDate))
+                .collect(Collectors.toList());
         if (inPeriod.isEmpty()) {
             throw new RuntimeException();
         }
-        inPeriod.sort(Comparator.comparing(Measurement::getDate));
-        double sum = 0;
-        for (Measurement m : inPeriod) {
-            System.out.println(m);
-            sum += m.getTemperature();
-        }
-        System.out.println(String.format("Average temperature: %.2f", sum / inPeriod.size()));
+        inPeriod.forEach(System.out::println);
+        double average = inPeriod.stream()
+                .mapToDouble(Measurement::getTemperature)
+                .average()
+                .orElse(0);
+        System.out.println(String.format("Average temperature: %.2f", average));
     }
 }
 

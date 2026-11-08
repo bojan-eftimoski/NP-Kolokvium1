@@ -1,13 +1,14 @@
 package kol1.zad01;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 class Canvas {
 
@@ -20,12 +21,13 @@ class Canvas {
     }
 
     public static Canvas createCanvas(String line) {
-        String[] parts = line.split("\\s+");
+        String[] parts = line.trim().split("\\s+");
+        String id = parts[0];
         List<Integer> sizes = new ArrayList<>();
         for (int i = 1; i < parts.length; i++) {
             sizes.add(Integer.parseInt(parts[i]));
         }
-        return new Canvas(parts[0], sizes);
+        return new Canvas(id, sizes);
     }
 
     public int getSquaresCount() {
@@ -33,11 +35,9 @@ class Canvas {
     }
 
     public int getTotalPerimeter() {
-        int sum = 0;
-        for (int size : sizes) {
-            sum += 4 * size;
-        }
-        return sum;
+        return sizes.stream()
+                .mapToInt(size -> 4 * size)
+                .sum();
     }
 
     @Override
@@ -56,35 +56,20 @@ class ShapesApplication {
 
     public int readCanvases(InputStream inputStream) {
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-        int squares = 0;
-        try {
-            String line;
-            while ((line = br.readLine()) != null) {
-                line = line.trim();
-                if (line.isEmpty()) {
-                    continue;
-                }
-                Canvas canvas = Canvas.createCanvas(line);
-                canvases.add(canvas);
-                squares += canvas.getSquaresCount();
-            }
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-        return squares;
+        canvases = br.lines()
+                .filter(line -> !line.isBlank())
+                .map(Canvas::createCanvas)
+                .collect(Collectors.toList());
+        return canvases.stream()
+                .mapToInt(Canvas::getSquaresCount)
+                .sum();
     }
 
     public void printLargestCanvasTo(OutputStream outputStream) {
         PrintWriter pw = new PrintWriter(outputStream);
-        Canvas largest = null;
-        for (Canvas canvas : canvases) {
-            if (largest == null || canvas.getTotalPerimeter() > largest.getTotalPerimeter()) {
-                largest = canvas;
-            }
-        }
-        if (largest != null) {
-            pw.println(largest);
-        }
+        canvases.stream()
+                .max(Comparator.comparing(Canvas::getTotalPerimeter))
+                .ifPresent(pw::println);
         pw.flush();
     }
 }
